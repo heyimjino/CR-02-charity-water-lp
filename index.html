@@ -4,44 +4,240 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Charity Water Landing Page</title>
+    <!-- Add site icon (favicon) -->
+    <link rel="icon" href="img/water-can-transparent.png" type="image/png">
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
+    <!-- Add site header above the hero -->
+    <header class="site-header" role="banner">
+        <!-- Replace text logo with image file -->
+        <div class="logo" aria-label="charity: water">
+            <img src="img/cw_logo-2.png" alt="charity: water logo" class="logo-image">
+        </div>
+
+        <!-- Simple nav to the right of the logo -->
+        <nav class="site-nav" role="navigation" aria-label="Main navigation">
+            <a href="#our-story">Our Story</a>
+            <a href="#our-goal">Our Goal</a>
+            <a href="#call-to-action">Donate Now</a>
+        </nav>
+    </header>
+
     <!-- Hero Section: This is the main banner at the top of the page -->
-    <section class="hero">
+    <!-- Example: set --hero-image to a local file inside the img/ folder -->
+    <section class="hero" style="--hero-image: url('img/woman and landscape.png')">
         <!-- Main headline -->
-        <h1>Clean Water for Everyone</h1>
+        <h1>Make an Impact,
+Turn your clicks into clean water</h1>
         <!-- Subheadline -->
-        <p>Join us in bringing safe, clean water to communities in need.</p>
+        <p>We use every dollar to bring clean drinking water to communities.</p>
+
+        <!-- Changed: blob-style "Give Water" button -->
+        <button id="give-water-button" class="blob-button" aria-label="Give Water">
+            Give Water
+        </button>
     </section>
 
     <!-- Story Section: This tells the story of the nonprofit -->
-    <section class="story">
-        <h2>Our Story</h2>
-        <p>
-         
+    <section class="story" id="our-story">
+      <div class="story-content">
+        <div class="story-media">
+          <!-- Overlay title placed over the top center of the image -->
+          <h2 class="story-title">Our Story</h2>
+
+          <img src="img/charity_water_Tanzania_TaraShupe.png" alt="Community in Tanzania" class="story-image">
+
+          <!-- White text box at bottom-right of the image on larger screens -->
+          <div class="story-box" aria-hidden="false">
+            <p>
+              We started with a simple goal: help communities get reliable access to clean water. Over the years we've partnered with local teams to build wells, train caretakers, and measure real impact.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Goal Section: This describes the goal of the nonprofit -->
+    <section class="goal" id="our-goal">
+        <!-- Moved: centered heading for the goal section -->
+        <h2 class="goal-heading">Our Goal</h2>
+        <div class="goal-content">
+            <div class="goal-text">
+                <div class="goal-box" aria-hidden="false">
+                  <p>
+                    Our goal is to bring safe, sustainable drinking water to every community we can reach.
+                  </p>
+                </div>
+
+                <!-- Goal meter: tube + animated blue fill + percent to the right -->
+                <div class="goal-meter-row" aria-hidden="false">
+                  <div class="goal-meter" role="img" aria-label="Progress: 100 percent">
+                    <div class="goal-fill" data-percent="100" style="width:100%"></div>
+                  </div>
+                  <div class="goal-percent" aria-hidden="false"><strong>100%</strong></div>
+                </div>
+
+                <!-- Short note below the meter -->
+                <p class="goal-note">
+                  100% of donations goes to clean water for communities in need.
+                </p>
+            </div>
+
+            <!-- Small, reasonable image placed to the right on larger screens -->
+            <img src="img/9504_Ethiopia_2019_CG-.png" alt="Community with clean water" class="goal-image">
+        </div>
     </section>
 
     <!-- Real-World Impact Story Section -->
     <section class="impact-story">
-        <!-- Section headline -->
-        <h2>Real Impact: Meet Amina</h2>
-        <!-- Container for image and text -->
+        <h2 class="impact-title">Real Impact: Meet Amina</h2>
+
         <div class="impact-content">
-            <!-- Impact image -->
-            <img src="https://images.unsplash.com/photo-1464983953574-0892a716854b?auto=format&fit=crop&w=600&q=80" alt="Amina smiling with clean water" class="impact-image">
-            <!-- Impact story text -->
-            <p>
-                Amina used to walk miles every day to collect water for her family. Thanks to your support, her village now has a clean water well. Amina can go to school and her family is healthier and happier.
-            </p>
+          <!-- impact-media sizes to the image so the overlay sits inside the image area -->
+          <div class="impact-media">
+            <img src="img/7644_Ethiopia_2019_CG-.png" alt="Amina smiling with clean water" class="impact-image">
+
+            <!-- White overlay box placed top-left inside the image -->
+            <div class="impact-box" aria-hidden="false">
+              Amina used to walk miles every day to collect water for her family. Thanks to your support, her village now has a clean water well. Amina can go to school and her family is healthier and happier.
+            </div>
+          </div>
         </div>
     </section>
 
     <!-- Call-to-Action Section: This encourages visitors to take action -->
-    <section class="call-to-action">
-        <h2>Make a Difference</h2>
+    <section class="call-to-action" id="call-to-action">
+        <h2>Ready to Make a Difference?</h2>
         <p>Your support can help save lives. Every donation brings us closer to a world with clean water for all.</p>
-        <a href="#" class="donate-button">Donate Now</a>
+        <a href="#" id="donate-now-button" class="donate-button">Donate Now</a>
     </section>
+
+    <!-- Donation Modal (hidden by default) -->
+    <div id="donation-modal" class="modal-overlay" aria-hidden="true" role="dialog" aria-modal="true">
+      <div class="modal" role="document" aria-labelledby="donation-title">
+        <button class="modal-close" aria-label="Close donation dialog">&times;</button>
+        <header class="modal-header">
+          <h3 id="donation-title">Choose Amount to Give</h3>
+        </header>
+
+        <div class="modal-body">
+          <!-- amount options -->
+          <div class="amount-row" role="radiogroup" aria-label="Preset amounts">
+            <button class="amount-option" data-value="50" type="button">$50 USD</button>
+            <button class="amount-option" data-value="100" type="button">$100 USD</button>
+            <button class="amount-option" data-value="150" type="button">$150 USD</button>
+            <button class="amount-option" data-value="200" type="button">$200 USD</button>
+          </div>
+
+          <!-- other amount input -->
+          <label class="other-label" for="other-amount">Other Amount</label>
+          <input id="other-amount" class="other-amount" type="number" min="1" placeholder="Enter amount in USD" aria-label="Other amount">
+        </div>
+
+        <footer class="modal-footer">
+          <button class="modal-donate-button" type="button">Donate</button>
+        </footer>
+      </div>
+    </div>
+
+    <!-- Script to handle blob button click and smooth scroll -->
+    <script>
+    // Get the give-water button and the donate (call-to-action) section
+    const giveButton = document.getElementById('give-water-button');
+    const donateSection = document.getElementById('call-to-action');
+
+    if (giveButton && donateSection) {
+        giveButton.addEventListener('click', () => {
+            donateSection.scrollIntoView({ behavior: 'smooth', block: 'end' });
+            giveButton.classList.add('clicked');
+            setTimeout(() => giveButton.classList.remove('clicked'), 350);
+            setTimeout(() => {
+                const donateControl = document.getElementById('donate-now-button');
+                if (donateControl) donateControl.focus({ preventScroll: true });
+            }, 700);
+        });
+    }
+
+    // Donation modal behavior
+    const donateNow = document.getElementById('donate-now-button');
+    const modal = document.getElementById('donation-modal');
+    const closeBtn = modal ? modal.querySelector('.modal-close') : null;
+    const amountButtons = modal ? Array.from(modal.querySelectorAll('.amount-option')) : [];
+    const otherInput = modal ? modal.querySelector('#other-amount') : null;
+    const donateBtn = modal ? modal.querySelector('.modal-donate-button') : null;
+
+    function openModal() {
+      if (!modal) return;
+      modal.setAttribute('aria-hidden', 'false');
+      document.body.style.overflow = 'hidden'; // prevent background scroll
+      // focus first amount button
+      const first = modal.querySelector('.amount-option');
+      if (first) first.focus();
+    }
+
+    function closeModal() {
+      if (!modal) return;
+      modal.setAttribute('aria-hidden', 'true');
+      document.body.style.overflow = '';
+      donateNow.focus({ preventScroll: true });
+      // clear selection
+      amountButtons.forEach(b => b.classList.remove('selected'));
+      if (otherInput) otherInput.value = '';
+    }
+
+    if (donateNow) {
+      donateNow.addEventListener('click', (e) => {
+        e.preventDefault();
+        openModal();
+      });
+    }
+
+    if (closeBtn) closeBtn.addEventListener('click', closeModal);
+
+    // click outside modal closes
+    modal && modal.addEventListener('click', (e) => {
+      if (e.target === modal) closeModal();
+    });
+
+    // Escape closes modal
+    window.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && modal && modal.getAttribute('aria-hidden') === 'false') {
+        closeModal();
+      }
+    });
+
+    // amount selection behavior
+    amountButtons.forEach(btn => {
+      btn.addEventListener('click', () => {
+        amountButtons.forEach(b => b.classList.remove('selected'));
+        btn.classList.add('selected');
+        if (otherInput) otherInput.value = '';
+      });
+    });
+
+    // typing an "other" amount clears selection
+    if (otherInput) {
+      otherInput.addEventListener('input', () => {
+        amountButtons.forEach(b => b.classList.remove('selected'));
+      });
+    }
+
+    // Donate (modal) click — simple demo action (replace with real submit)
+    if (donateBtn) {
+      donateBtn.addEventListener('click', () => {
+        // determine amount
+        const selected = amountButtons.find(b => b.classList.contains('selected'));
+        const amount = selected ? selected.getAttribute('data-value') : (otherInput ? otherInput.value : '');
+        if (!amount || Number(amount) <= 0) {
+          alert('Please choose or enter an amount.');
+          return;
+        }
+        // here you would call your payment flow — we just show a confirmation demo
+        alert('Thank you — you chose $' + amount + ' USD. (Demo)');
+        closeModal();
+      });
+    }
+    </script>
 </body>
 </html>

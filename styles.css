@@ -25,27 +25,29 @@ Fonts:
 
 /* Set up the main font and background color for the whole page */
 body {
-  background-color: #f4f8fb; /* Soft light blue for a fresh look */
+  background-color: #FFFCF5; /* Beige background */
   font-family: 'Avenir', 'Proxima Nova', Arial, sans-serif;
   margin: 0;
   padding: 0;
   color: #222;
 }
 
-/* Add a slight shadow and rounded corners to each section for depth */
-section {
-  background: #fff; /* White background for sections */
-  border-radius: 12px; /* Rounded corners */
-  box-shadow: 0 2px 8px rgba(46, 157, 247, 0.07); /* Soft blue shadow */
-  margin: 24px 10px; /* Space between sections */
+/* Remove white background and border for non-hero sections so content sits on page background */
+section:not(.hero) {
+  background: transparent;  /* no white background */
+  border: none;             /* remove any border */
+  box-shadow: none;         /* remove shadow */
+  margin: 24px 10px;
   padding: 24px 16px;
+  border-radius: 0;         /* remove rounded section box */
 }
 
 /* Hero Section Styles */
 .hero {
-  position: relative; /* Needed for overlay */
-  /* Set a background image that covers the whole section */
-  background-image: url('https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=1500&q=80');
+  position: relative; /* Needed for overlay and absolute children */
+  /* Use a CSS variable for the background image so it can be changed easily */
+  --hero-image: url('https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=1500&q=80');
+  background-image: var(--hero-image);
   background-size: cover;      /* Make the image cover the whole area */
   background-position: center; /* Center the image */
   background-repeat: no-repeat;
@@ -54,34 +56,47 @@ section {
   padding: 60px 20px;          /* Add space above and below */
   border-radius: 0 0 16px 16px; /* Only round bottom corners */
 
-  /* Add a dark overlay for better text readability */
-  /* This uses a simple linear-gradient overlay */
-  background-blend-mode: darken;
-  background-color: rgba(46, 157, 247, 0.45); /* Blue overlay */
+  /* Make hero fill the full viewport height */
+  height: 100vh;
+
+  /* No overlay — show the background image unobstructed */
+
+  /* Center content with flexbox */
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  box-sizing: border-box;
 }
 
 /* Make the headline bold and modern */
 .hero h1 {
-  font-size: 2.5em;
+  /* moved further up and slightly squashed */
+  font-size: 2.0em;
   font-weight: bold;
-  letter-spacing: 1px;
-  margin-bottom: 15px;
-  text-shadow: 0 2px 8px rgba(0,0,0,0.15); /* Soft shadow for readability */
+  letter-spacing: 0.4px;
+  margin: 0 0 6px 0;
+  line-height: 0.98;
+  text-shadow: 0 2px 8px rgba(0,0,0,0.15);
+  transform: translateY(-28px) scaleY(0.94); /* moved up more */
+  transform-origin: center;
+  text-align: center;
+
+  /* ensure headline uses full width and is centered */
+  display: block;
+  width: 100%;
+  margin: 0 auto;
 }
 
 /* Style the subheadline */
 .hero p {
-  font-size: 1.2em;
-  margin-top: 0;
+  /* moved up closer to headline (keeps headline/subheadline compact) */
+  font-size: 1.02em;
+  margin: 0;
+  line-height: 1.18;
   text-shadow: 0 1px 4px rgba(0,0,0,0.12);
-}
-
-/* Story Section Styles */
-.story {
-  background-color: #8BD1CB; /* Secondary Light Blue */
-  color: #222;
+  transform: translateY(-20px); /* moved up more */
   text-align: center;
-  padding: 30px 20px;
 }
 
 /* Add accent color to section headings */
@@ -99,19 +114,36 @@ h2 {
   padding: 30px 20px;
 }
 
-/* Style the impact story image */
+/* Make the call-to-action heading black */
+.call-to-action h2 {
+  color: #111; /* black */
+}
+
+/* Style the impact story image
+   Make the image smaller by default so the real-impact image appears reduced. */
 .impact-image {
-  width: 100%;
-  max-width: 320px;
-  border-radius: 10px;
+  /* same responsive sizing as .story-image */
+  display: block;
+  width: calc(100vw - 80px); /* side margin so image appears smaller on wide screens */
+  max-width: 1100px;         /* match story max width on large screens */
+  height: auto;
+  border-radius: 8px;
+  object-fit: cover;
   margin-bottom: 16px;
   box-shadow: 0 2px 8px rgba(46, 157, 247, 0.10);
+}
+
+/* Image styling */
+.impact-image {
+    max-width: 100%;
+    height: auto;
+    border-radius: 8px;
 }
 
 /* Donate Button Styles */
 .donate-button {
   display: inline-block;
-  background-color: #4FCB53; /* Green */
+  background-color: #FFC907; /* Yellow (match primary) */
   color: #fff;
   padding: 14px 32px;
   text-decoration: none;
@@ -127,13 +159,182 @@ h2 {
 
 /* Change button color when hovered */
 .donate-button:hover {
-  background-color: #159A48; /* Dark Green */
+  background-color: #FF902A; /* darker yellow/orange for contrast */
   transform: translateY(-2px) scale(1.04); /* Slight lift */
 }
 
 /* Add some spacing between sections */
 section {
   margin-bottom: 20px;
+}
+
+/* ============================
+   Blob "Give Water" button
+   (updated: faster idle morph, enlarge on hover, no roaming movement)
+   ============================ */
+
+.blob-button {
+  /* size and basic look */
+  width: 130px;
+  height: 86px; /* non-square to make a more organic blob shape */
+  border: none;
+  cursor: pointer;
+  background: #FFC907; /* yellow */
+  color: #000; /* black text */
+  font-family: "Avenir", "Helvetica Neue", Arial, sans-serif;
+  font-weight: 800;
+  font-size: 16px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: visible;
+  box-shadow: 0 8px 18px rgba(0,0,0,0.12);
+  transition: transform 180ms ease, box-shadow 180ms ease;
+  /* Start with a friendly blob border-radius */
+  border-radius: 46% 54% 60% 40% / 45% 50% 50% 55%;
+
+  /* Allow the blob to gently morph even when idle (duration reduced from 6s -> 4s) */
+  animation: blobMorph 4s ease-in-out infinite;
+}
+
+/* Slight lift and larger scale when hovered or focused (enlarge instead of roaming) */
+.blob-button:hover,
+.blob-button:focus {
+  transform: translateY(-6px) scale(1.08); /* larger scale on hover */
+  outline: none;
+  box-shadow: 0 14px 28px rgba(0,0,0,0.14);
+}
+
+/* Small pressed feedback */
+.blob-button.clicked {
+  transform: translateY(-2px) scale(0.98);
+  transition: transform 120ms ease;
+}
+
+/* Remove movement control variables; hover no longer starts blobMove. */
+
+/* blobMorph gently changes four-corner border-radius to create organic morphing
+   (duration updated to 4s above)
+*/
+@keyframes blobMorph {
+  0% {
+    border-radius: 46% 54% 60% 40% / 45% 50% 50% 55%;
+  }
+  33% {
+    border-radius: 55% 45% 48% 52% / 50% 42% 58% 50%;
+  }
+  66% {
+    border-radius: 42% 58% 62% 38% / 55% 48% 42% 55%;
+  }
+  100% {
+    border-radius: 46% 54% 60% 40% / 45% 50% 50% 55%;
+  }
+}
+
+/* Ensure hover only uses the faster morph (no roaming movement) */
+.blob-button:hover,
+.blob-button:focus {
+  animation: blobMorph 4s ease-in-out infinite;
+}
+
+/* Accessibility: keyboard-visible focus */
+.blob-button:focus-visible {
+  box-shadow: 0 0 0 6px rgba(46,157,247,0.12), 0 14px 28px rgba(0,0,0,0.14);
+}
+
+/* Make the text inside the blob wrap nicely on small screens */
+.blob-button {
+  padding: 6px 12px;
+  text-align: center;
+  line-height: 1;
+}
+
+/* Responsive: smaller blob on small screens */
+@media (max-width: 480px) {
+  .blob-button {
+    width: 104px;
+    height: 72px;
+    font-size: 14px;
+  }
+}
+
+/* Site header placed above the hero.
+   - Left: text-based "charity: water" logo (black)
+   - Right: simple navigation links
+*/
+.site-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px;              /* smaller gap between logo and nav */
+  padding: 6px 8px;      /* smaller padding */
+  margin: 4px;           /* reduce outer spacing */
+  box-sizing: border-box;
+  background: transparent;
+  border-radius: 4px;     /* smaller radius */
+}
+
+/* Logo text slightly smaller */
+.logo {
+  font-family: 'Avenir', 'Proxima Nova', Arial, sans-serif;
+  font-weight: 800;
+  font-size: 0.9rem;       /* reduced size */
+  color: #000;
+  line-height: 1;
+  display: flex;
+  align-items: center;
+  /* keep a small gap if you later add text beside the logo image */
+  gap: 8px;
+}
+
+/* Logo image sizing — adjust height as needed */
+.logo-image {
+  display: block;
+  height: 24px; /* reduced from 34px */
+  width: auto;
+}
+
+/* Tighten navigation spacing */
+.site-nav {
+  display: flex;
+  gap: 8px;             /* reduced gap */
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+/* Smaller clickable area for nav links */
+.site-nav a {
+  color: #222;
+  text-decoration: none;
+  font-weight: 600;
+  padding: 2px 6px;      /* reduced padding */
+  border-radius: 6px;
+  transition: background 180ms, color 180ms, transform 120ms;
+}
+
+/* Hover and focus styles for nav links */
+.site-nav a:hover,
+.site-nav a:focus {
+  background: rgba(247, 210, 46, 0.06);
+  color: #2E9DF7;
+  transform: translateY(-2px);
+  outline: none;
+}
+
+/* Responsive: stack header content on small screens */
+@media (max-width: 600px) {
+  .site-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;            /* reduced from 8px */
+    margin: 4px;         /* match reduced header margin */
+    padding: 4px 6px;    /* smaller padding on phones */
+  }
+
+  .site-nav {
+    gap: 8px;            /* maintain tighter nav spacing on small screens */
+  }
 }
 
 /* 
@@ -144,38 +345,67 @@ section {
 
 /* This media query applies styles when the screen is 600px wide or less (like on most phones) */
 @media (max-width: 600px) {
-  /* Make hero section padding smaller on small screens */
+  /* Make hero section padding and text size smaller for small screens */
   .hero {
-    padding: 32px 8px;
-    font-size: 1em;
+    padding: 40px 20px;
+    text-align: center;
   }
 
-  /* Make headline font size smaller so it fits on small screens */
   .hero h1 {
-    font-size: 1.4em;
+    font-size: 1.6em;
+    line-height: 1.02;
+    transform: translateY(-18px) scaleY(0.96); /* slightly less on phones */
   }
 
-  /* Make subheadline font size smaller */
   .hero p {
-    font-size: 1em;
+    font-size: 0.98em;
+    transform: translateY(-14px);
   }
 
-  /* Make story and call-to-action sections have less padding */
-  .story,
-  .call-to-action,
-  .donation-section {
-    padding: 14px 8px;
-  }
-
-  /* Make impact story image smaller and stack above the text */
-  .impact-content {
-    display: block; /* Stack items vertically */
+  /* Stack story images and text on top of each other */
+  .story {
+    flex-direction: column;
+    align-items: center;
     text-align: center;
   }
 
   .impact-image {
-    width: 90%;    /* Make image take up most of the width */
-    max-width: 220px;
+    margin-bottom: 12px;
+  }
+
+  /* Make buttons full-width and stack them */
+  .call-to-action {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .donate-button {
+    width: 100%;
+    max-width: 300px;
+    margin-top: 12px;
+  }
+
+  /* Stack header content and reduce logo size */
+  .site-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+    padding: 4px 6px;
+  }
+
+  .logo {
+    font-size: 0.85rem;
+  }
+
+  .logo-image {
+    height: 20px; /* smaller logo on phones */
+  }
+
+  /* Ensure nav links are easily tappable */
+  .site-nav a {
+    padding: 6px 8px; /* keep tappable but compact */
+    font-size: 0.85rem;
   }
 }
 
@@ -192,7 +422,614 @@ section {
     margin: 0 auto;
   }
 
+  /* Make the impact image smaller on medium+ screens too */
   .impact-image {
-    width: 300px;
+    /* match story-image sizing on medium+ screens */
+    display: block;
+    width: calc(100vw - 80px);
+    max-width: 1100px;
+    height: auto;
   }
+}
+
+/* This media query applies styles when the screen is 901px wide or more (like on most desktops) */
+@media (min-width: 901px) {
+  /* Center the hero text and reduce padding on larger screens */
+  .hero {
+    text-align: center;
+    padding: 80px 40px;
+  }
+
+  .hero h1 {
+    font-size: 2.8em;
+    line-height: 0.98;
+    transform: translateY(-34px) scaleY(0.92); /* more upward offset on large screens */
+  }
+
+  .hero p {
+    font-size: 1.15em;
+    transform: translateY(-24px);
+  }
+
+  /* Story section: use two columns on larger screens */
+  .story {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    text-align: left;
+  }
+
+  .impact-image {
+    margin-bottom: 0;
+    margin-right: 24px;
+  }
+
+  /* Call-to-action button: larger size */
+  .donate-button {
+    padding: 16px 36px;
+    font-size: 1.2em;
+  }
+
+  /* Site header: increase logo size and adjust spacing */
+  .site-header {
+    padding: 8px 12px;
+    margin: 6px;
+  }
+
+  .logo {
+    font-size: 1rem;
+  }
+
+  .logo-image {
+    height: 28px;
+  }
+
+  /* Nav links: increase font size and padding */
+  .site-nav a {
+    padding: 4px 8px;
+    font-size: 0.98rem;
+  }
+}
+
+/* Goal image sizing and styling — smaller and reasonable */
+.goal-image {
+  flex: 0 0 140px;    /* small fixed width on desktop */
+  max-width: 26%;
+  width: 140px;
+  height: auto;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
+
+/* Responsive: stack image under text on narrow screens and keep it small */
+@media (max-width: 700px) {
+  .goal-content {
+    flex-direction: column-reverse; /* image below text */
+    align-items: flex-start;
+    gap: 12px;
+  }
+
+  .goal-image {
+    width: 100%;
+    max-width: 180px;   /* limited width on mobile */
+    flex: 0 0 auto;
+  }
+
+  .goal {
+    padding: 20px 14px;
+  }
+}
+
+/* Increase the goal-image size and let it fill most of the goal section. Only the changed rules are shown — merge into your file. */
+
+.goal {
+  /* keep existing visuals but allow taller content so image can fill the area */
+  background-color: #8BD1CB;
+  color: #222;
+  text-align: left;
+  border: 3px solid rgba(46,157,247,0.08);
+  border-radius: 14px;
+  padding: 24px 12px; /* slightly reduced padding so image sits closer to border */
+  margin: 24px 10px;
+}
+
+/* Container to place text (left) and image (right) */
+.goal-content {
+  display: flex;
+  align-items: stretch;    /* allow children to match container height */
+  gap: 16px;
+  max-width: 1100px;
+  margin: 0 auto;
+  box-sizing: border-box;
+  min-height: 240px;       /* gives the image vertical space to fill */
+}
+
+/* Ensure the text column can grow and the image keeps a large fixed proportion */
+.goal-text {
+  flex: 1 1 40%;           /* text takes about 40% */
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding-right: 8px;
+}
+
+/* Make the main goal paragraph larger for emphasis */
+.goal-text p {
+  font-size: 1.15rem;   /* slightly larger body text */
+  line-height: 1.45;
+}
+
+/* Goal heading styles — ensure full width, centered, and black */
+.goal-heading {
+  color: #111;          /* black */
+  text-align: center;   /* center above the whole section */
+  margin: 0 0 18px 0;   /* space below the heading */
+  font-size: 1.8rem;
+  font-weight: 700;
+}
+
+/* Goal image sizing and styling — larger and fills most of the right side */
+.goal-image {
+  flex: 0 0 60%;           /* image occupies ~60% of the row */
+  width: 60%;
+  height: 100%;            /* fill the vertical space of the goal-content */
+  object-fit: cover;       /* crop to fill without distortion */
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
+
+/* White card for the goal text */
+.goal-box {
+  background: #ffffff;                 /* white background */
+  color: #111;                         /* ensure readable black text */
+  padding: 18px 20px;                  /* roomy padding */
+  border-radius: 10px;                 /* rounded corners */
+  box-shadow: 0 8px 24px rgba(0,0,0,0.08); /* soft drop shadow */
+  max-width: 720px;                    /* limit width for readability */
+  margin: -8px auto 0;                 /* move the box up slightly (negative top margin) */
+  font-size: 1.15rem;                  /* keep the larger text size you requested */
+  line-height: 1.45;
+}
+
+/* Ensure the box stretches reasonably on small screens */
+@media (max-width: 700px) {
+  .goal-box {
+    width: 100%;
+    max-width: 100%;
+    padding: 14px;
+    box-shadow: 0 6px 18px rgba(0,0,0,0.06);
+  }
+}
+
+/* Story section: H2 centered above the image and media container */
+.story {
+  text-align: center;
+  padding: 12px 10px; /* lighter padding so page feels open */
+  margin-top: 220px; /* bring the story (and image) further down from the hero */
+}
+
+/* Content wrapper to center the image block */
+.story-content {
+  display: flex;
+  justify-content: center;
+  margin-top: 32px; /* reduced so the title sits centered in the gap above the image */
+}
+
+/* Container around the image to allow overlays */
+.story-media {
+  position: relative;
+  display: block;
+  width: 100%;
+  max-width: 90vw;    /* slightly narrower so the image sits smaller on wide screens */
+  box-sizing: border-box;
+}
+
+/* Story image nearly fills the screen while keeping a small page margin */
+.story-image {
+  display: block;
+  width: calc(100vw - 80px); /* more side margin so the image appears smaller */
+  max-width: 1100px;         /* reduced max width on large screens */
+  height: auto;
+  border-radius: 8px;
+  object-fit: cover;
+}
+
+/* Overlay title positioned at the top center of the image */
+.story-title {
+  /* place the title in normal flow above the image, centered in the gap */
+  position: static;
+  margin: 0 0 12px 0;
+  color: #111;                         /* black text in the gap */
+  font-size: 1.8rem;
+  font-weight: 700;
+  text-shadow: none;
+  padding: 4px 8px;
+  text-align: center;
+  pointer-events: auto;
+}
+
+/* White text box positioned bottom-right over the image */
+.story-box {
+  position: absolute;
+  right: 14px;
+  bottom: 14px;
+  background: #ffffff;
+  color: #000000;
+  padding: 14px 16px;
+  border-radius: 8px;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.12);
+  max-width: 42%;
+  font-size: 0.95rem;
+  line-height: 1.3;
+}
+
+/* Center impact-content and make the media wrapper size to the image */
+.impact-content {
+  display: flex;
+  justify-content: center; /* center the image wrapper horizontally */
+  align-items: center;
+  text-align: center;
+}
+
+/* impact-media should size to the image so absolute overlay sits within the image area */
+.impact-media {
+  position: relative;
+  display: inline-block; /* shrink-wrap to the image width */
+  width: auto;
+  max-width: 90vw;
+  box-sizing: border-box;
+  margin: 0 auto;
+}
+
+/* Ensure the impact image fills its wrapper and matches story sizing */
+.impact-media .impact-image {
+  display: block;
+  width: calc(100vw - 80px);
+  max-width: 1100px;
+  height: auto;
+  border-radius: 8px;
+  object-fit: cover;
+}
+
+/* White text box placed top-left over the impact image (matches story-box look) */
+.impact-box {
+  position: absolute;
+  left: 14px;
+  top: 14px;
+  z-index: 3;
+  background: #ffffff;
+  color: #000;
+  padding: 14px 16px;
+  border-radius: 8px;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.12);
+  max-width: 42%;
+  font-size: 0.95rem;
+  line-height: 1.3;
+  pointer-events: auto;
+}
+
+/* On small screens flow the box under the image for readability */
+@media (max-width: 700px) {
+  .impact-box {
+    position: static; /* flow under the image on mobile */
+    margin-top: 12px;
+    max-width: 100%;
+    box-shadow: 0 6px 18px rgba(0,0,0,0.08);
+  }
+
+  .impact-media {
+    width: 100%;
+    max-width: 100%;
+  }
+}
+
+/* Responsive: on narrow screens make image smaller and stack overlays below */
+@media (max-width: 700px) {
+  .story {
+    margin-top: 120px; /* keep a larger gap on mobile too so image is further down */
+  }
+
+  .story-media {
+    max-width: 100%;
+  }
+
+  .story-image {
+    width: 100%;
+    max-width: 320px;  /* slightly smaller on mobile */
+  }
+
+  .story-title {
+    position: static;  /* place title above the image flow on mobile */
+    transform: none;
+    color: #111;
+    text-shadow: none;
+    margin-bottom: 12px;
+    pointer-events: auto;
+  }
+
+  .story-box {
+    position: static;  /* place below image */
+    margin-top: 12px;
+    max-width: 100%;
+    box-shadow: 0 6px 18px rgba(0,0,0,0.08);
+  }
+
+  .story-content {
+    flex-direction: column;
+    align-items: center;
+    margin-top: 12px; /* keep small spacing under the heading on mobile */
+  }
+
+  .story > h2 {
+    margin-bottom: 8px;
+  }
+}
+
+/* Impact title styles — ensure full width, centered, and black */
+.impact-title {
+  color: #111;            /* black */
+  text-align: center;     /* centered above the image */
+  display: block;         /* make sure it uses the full line */
+  width: 100%;
+  margin: 0 0 12px 0;
+  font-size: 1.8rem;
+  font-weight: 700;
+}
+
+/* Goal meter row places the tube and percentage side-by-side */
+.goal-meter-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 48px;         /* bigger gap between the goal box and the meter */
+  justify-content: center;  /* center meter + percent as a group under the goal box */
+}
+
+/* Tube container (rounded, subtle border) */
+/* Make tube a bit shorter in length and slightly taller in height */
+.goal-meter {
+  flex: 1 1 320px;          /* allow meter to grow, shorter default length */
+  max-width: 720px;         /* match .goal-box width so meter length equals text box */
+  height: 24px;             /* slightly taller tube */
+  margin: 0 auto;           /* center the meter itself */
+  background: linear-gradient(180deg, rgba(0,0,0,0.04), rgba(0,0,0,0.02));
+  border-radius: 999px;     /* pill/tube shape */
+  padding: 2px;             /* inner padding so fill has inset */
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.6);
+  position: relative;
+  overflow: hidden;
+  border: 1px solid rgba(0,0,0,0.06);
+}
+
+/* Note text below the meter */
+.goal-note {
+  margin: 12px auto 0;      /* space above note and center under meter */
+  max-width: 720px;         /* match meter / goal-box width */
+  text-align: center;
+  color: #111;
+  font-size: 0.95rem;
+  line-height: 1.4;
+}
+
+/* Blue fill that sits at the bottom portion of the tube and shows a flowing wave */
+.goal-fill {
+  /* make the fill sit absolutely inside the tube and occupy the bottom 80% (top 20% appears cut away) */
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 100%;              /* tube is visually full horizontally */
+  height: 80%;              /* bottom 80% shows as water; top 20% appears cut away */
+  background: linear-gradient(180deg, #2E9DF7 0%, #2A84D9 100%); /* blue water */
+  border-radius: 0 0 999px 999px; /* round bottom corners only */
+  box-shadow: inset 0 -6px 12px rgba(0,0,0,0.10);
+  overflow: hidden;
+  /* no scale animation here — the water looks full but animated by the wave overlay */
+  /* gentle vertical bob to add a flowy feel */
+  animation: fillFloat 6s ease-in-out infinite;
+}
+
+/* moving "wave" overlay to simulate surface motion (now vertical wave only) */
+.goal-fill::before {
+  content: "";
+  position: absolute;
+  left: -60%;
+  top: -35%;
+  width: 220%;
+  height: 140%;
+  background-image:
+    radial-gradient(circle at 8% 50%, rgba(255,255,255,0.14) 6%, transparent 7%),
+    radial-gradient(circle at 30% 50%, rgba(255,255,255,0.10) 6%, transparent 7%),
+    linear-gradient(120deg, rgba(255,255,255,0.06) 0%, rgba(255,255,255,0.00) 60%);
+  opacity: 0.88;
+  transform: translateY(-6%);
+  /* animate vertical wave motion and a slow opacity pulse for depth */
+  animation: waterMove 3.6s cubic-bezier(.25,.8,.25,1) infinite,
+             crestPulse 8s ease-in-out infinite;
+  pointer-events: none;
+  mix-blend-mode: screen;
+}
+
+/* wavy/blob-like top mask now ripples up/down and scales (no horizontal shift) */
+.goal-fill::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: -18px;                /* slightly higher so taller waves are visible */
+  height: 36px;              /* taller mask to show more wave detail */
+  background-repeat: no-repeat;
+  /* start with background positioned to the right so the animation moves left */
+  background-position: 80% top;
+  /* larger size so the waveform fills across the tube */
+  background-size: 200% 140%;
+  /* SVG with many small peaks */
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 40' preserveAspectRatio='none'><path d='M0 28 C10 12 20 36 30 18 C40 0 50 34 60 20 C70 8 80 36 90 22 C100 8 110 34 120 18 C130 6 140 34 150 20 C160 8 170 36 180 18 C190 4 200 26 200 26 L200 0 L0 0 Z' fill='%23FFFCF5'/></svg>");
+  pointer-events: none;
+  transform-origin: 50% 50%;
+  /* vertical ripple + horizontal background shift for flowing motion */
+  animation: waveRipple 30s ease-in-out infinite, bgShift 9s linear infinite;
+}
+
+/* horizontal background-position shift to move the wave shape right→left (reversed) */
+@keyframes bgShift {
+  0%   { background-position: 90% top; }
+  50%  { background-position: 50% top; }
+  100% { background-position: 10% top; }
+}
+
+/* vertical-only subtle surface movement */
+@keyframes waterMove {
+  0%   { transform: translateY(-10%); }
+  25%  { transform: translateY(-6%); }
+  50%  { transform: translateY(-4%); }
+  75%  { transform: translateY(-6%); }
+  100% { transform: translateY(-10%); }
+}
+
+/* crest pulse now affects only opacity for a gentle shimmer */
+@keyframes crestPulse {
+  0%   { opacity: 0.82; }
+  50%  { opacity: 0.96; }
+  100% { opacity: 0.82; }
+}
+
+/* top mask ripple: gentle vertical motion + slight scale (no X translation) */
+@keyframes waveRipple {
+  0%   { transform: translateY(0) rotate(-0.2deg) scale(1.03); }
+  25%  { transform: translateY(-0.8%) rotate(0.2deg)  scale(1.00); }
+  50%  { transform: translateY(-1.2%) rotate(-0.1deg) scale(1.04); }
+  75%  { transform: translateY(-0.6%) rotate(0.1deg)  scale(1.01); }
+  100% { transform: translateY(0) rotate(-0.2deg) scale(1.03); }
+}
+
+/* gentle float for the whole fill to add subtle vertical movement */
+@keyframes fillFloat {
+  0%   { transform: translateY(0); }
+  50%  { transform: translateY(-3px); }
+  100% { transform: translateY(0); }
+}
+
+/* Donation modal overlay (covers full screen and blurs background) */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  display: none;                  /* hidden when aria-hidden="true" */
+  align-items: center;
+  justify-content: center;
+  background: rgba(0,0,0,0.36);   /* dim behind modal */
+  backdrop-filter: blur(6px);     /* blur supported browsers */
+  -webkit-backdrop-filter: blur(6px);
+  z-index: 1200;
+}
+
+/* show overlay when active */
+.modal-overlay[aria-hidden="false"] {
+  display: flex;
+}
+
+/* Modal white square */
+.modal {
+  background: #ffffff;
+  width: 92%;
+  max-width: 720px;
+  border-radius: 12px;
+  padding: 18px;
+  box-shadow: 0 24px 48px rgba(0,0,0,0.28);
+  box-sizing: border-box;
+  transform-origin: center;
+}
+
+/* Close button (top-right) */
+.modal-close {
+  position: absolute;
+  right: 18px;
+  top: 14px;
+  background: transparent;
+  border: none;
+  font-size: 26px;
+  line-height: 1;
+  cursor: pointer;
+  color: #333;
+}
+
+/* Modal header */
+.modal-header h3 {
+  margin: 6px 0 12px 0;
+  font-size: 1.25rem;
+  color: #111;
+  text-align: center; /* centered title */
+}
+
+/* Amount option buttons row */
+.amount-row {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-bottom: 12px;
+  justify-content: center; /* CENTER the four boxes */
+  align-items: center;
+}
+
+/* Each preset amount button */
+.amount-option {
+  flex: 0 0 auto;
+  padding: 10px 12px;
+  background: #f1f6fb;
+  border: 1px solid rgba(0,0,0,0.06);
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 700;
+  color: #0d4f86;
+}
+
+/* selected state */
+.amount-option.selected {
+  background: #2E9DF7;
+  color: white;
+  box-shadow: 0 6px 18px rgba(46,157,247,0.16);
+}
+
+/* Other amount input */
+.other-label {
+  display: block;
+  margin-top: 8px;
+  margin-bottom: 6px;
+  color: #333;
+  font-weight: 600;
+}
+.other-amount {
+  width: 100%;
+  padding: 12px 10px;
+  border-radius: 8px;
+  border: 1px solid rgba(0,0,0,0.08);
+  font-size: 1rem;
+  box-sizing: border-box;
+  margin-bottom: 14px;
+}
+
+/* Modal footer donate button (yellow) */
+.modal-donate-button {
+  display: inline-block;
+  width: 100%;
+  background: #FFC907;
+  color: #fff;
+  padding: 14px 16px;
+  border-radius: 10px;
+  border: none;
+  font-weight: 800;
+  font-size: 1.05rem;
+  cursor: pointer;
+  box-shadow: 0 8px 18px rgba(0,0,0,0.12);
+}
+
+/* Hover state */
+.modal-donate-button:hover {
+  background: #FF902A;
+}
+
+/* Responsive: keep modal comfortable on phones */
+@media (max-width: 480px) {
+  .modal { padding: 12px; }
+  .amount-option { padding: 10px; font-size: 0.95rem; }
+  .modal-close { right: 12px; top: 8px; font-size: 22px; }
 }
